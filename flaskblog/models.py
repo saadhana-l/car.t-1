@@ -15,19 +15,33 @@ class Account(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     account_type = db.Column(db.String(20),nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    posts = db.relationship('Post', backref='author', lazy=True)
+    posts = db.relationship('Car', backref='author', lazy=True)
 
     def __repr__(self):
         return f"Account('{self.username}','{self.account_type}', '{self.email}', '{self.image_file}')"
 
 
-class Post(db.Model):
+class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
-    car_img = db.Column(db.String(20), nullable=False, default='default.jpg')
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     user_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    location = db.Column(db.String(20),nullable=False)
+    year = db.Column(db.Integer,nullable=False)
+    kilometers_driven = db.Column(db.Integer,nullable=False)
+    fuel_type= db.Column(db.String(20),nullable=False)
+    transmission= db.Column(db.String(20),nullable=False)
+    owner_type= db.Column(db.String(20),nullable=False)
+    mileage = db.Column(db.String(20),nullable=False)
+    engine =  db.Column(db.Integer,nullable=False)
+    power =  db.Column(db.Integer,nullable=False)
+    seats =   db.Column(db.Integer,nullable=False)
+    brand=  db.Column(db.String,nullable=False)
+    pred_price =  db.Column(db.Float,nullable=True)
+    price = db.Column(db.Float,nullable=True)
+    deal_type =  db.Column(db.String,nullable=True)
 
     def __repr__(self):
-        return f"Post('{self.title}', '{self.date_posted}','{self.car_img}')"
+        return f"Car({self.title}', '{self.date_posted}','{self.content}','{self.user_id}','{self.location}','{self.year}','{self.kilometers_driven}','{self.fuel_type}','{self.transmission}','{self.owner_type}','{self.mileage}','{self.engine}','{self.power}','{self.seats}','{self.brand}')"

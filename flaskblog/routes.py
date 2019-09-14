@@ -4,14 +4,14 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskblog import app, db, bcrypt
 from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from flaskblog.models import Account, Post
+from flaskblog.models import Account, Car
 from flask_login import login_user, current_user, logout_user, login_required
 
 
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all()
+    posts = Car.query.all()
     return render_template('home.html', posts=posts)
 
 
@@ -98,8 +98,8 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
-        db.session.add(post)
+        car = Car(title=form.title.data, content=form.content.data,author=current_user,location=form.location.data,year=form.year.data,kilometers_driven=form.kilometers_driven.data,fuel_type=form.fuel_type.data,transmission=form.transmission.data,owner_type=form.owner_type.data,mileage=form.mileage.data,engine=form.engine.data,power=form.power.data,seats=form.seats.data,brand=form.brand.data)
+        db.session.add(car)
         db.session.commit()
         flash('Your post has been created!', 'success')
         return redirect(url_for('home'))
