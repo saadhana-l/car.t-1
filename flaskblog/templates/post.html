@@ -15,6 +15,40 @@
       </div>
       <h2 class="article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>
+      <img class="img-thumbnail" style="width: 350px; height: 350px" src="{{ url_for('static', filename='car_pics/' + post.image_file) }}">
+      <p class="<article-content">Location: {{ post.location }}</p>
+      <p class="<article-content">Brand: {{ post.brand }}</p>
+      <p class="<article-content">Year: {{ post.year }}</p>
+      <p class="<article-content">kilometers_driven: {{ post.kilometers_driven }} km</p>
+      <p class="<article-content">Fuel Type: {{ post.fuel_type }}</p>
+      <p class="<article-content">Transmission: {{ post.transmission }}</p>
+      <p class="<article-content">Owner Type: {{ post.owner_type }}</p>
+      {% if post.fuel_type == 'CNG' %}
+          <p class="<article-content">Mileage: {{ post.mileage }} km/kg</p>
+      {% endif %}
+      {% if post.fuel_type == 'LPG' %}
+          <p class="<article-content">Mileage: {{ post.mileage }} km/kg</p>
+      {% endif %}
+      {% if post.fuel_type == 'Petrol' %}
+          <p class="<article-content">Mileage: {{ post.mileage }} km/l</p>
+      {% endif %}
+      {% if post.fuel_type == 'Diesel' %}
+          <p class="<article-content">Mileage: {{ post.mileage }} km/l</p>
+      {% endif %}
+      <p class="<article-content">Engine: {{ post.engine }} CC</p>
+      <p class="<article-content">Power: {{ post.power }} bhp</p>
+      <p class="<article-content">Seats: {{ post.seats }} seats</p>
+      <p class="<article-content">Predicted Price: {{ post.pred_price }} Lakhs </p>
+      <p class="<article-content">Price: {{ post.price }} Lakhs</p>
+      {% if post.deal_type == 'good' %}
+          <h1 class="<article-content">car.t Verified! <img class="article-img" style="width: 60px; height: 60px" src="{{ url_for('static', filename='site_logos/' + 'verified.JPG') }}"> </h1>
+
+      {% endif %}
+
+
+
+
+      </article>"
     </div>
   </article>
   <!-- Modal -->

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField,SelectField,IntegerField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField,SelectField,IntegerField,FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError,AnyOf
 from flaskblog.models import Account,Car
 
@@ -13,7 +13,7 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     #account_type=StringField('AccountType',validators=[DataRequired(),AnyOf(['Seller','Buyer'],message='Enter either Buyer or Seller')])
-    account_type = SelectField('Account Type',choices=[('seller','Seller'),('buyer','Buyer')])
+    account_type = SelectField('Account Type',choices=[('Seller','Seller'),('Buyer','Buyer')])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
@@ -58,6 +58,9 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('That email is taken. Please choose a different one.')
 
+class FinalForm(FlaskForm):
+    final_price = FloatField('Enter Final Price',validators=[DataRequired()])
+    submit = SubmitField('Add Listing!')
 
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
