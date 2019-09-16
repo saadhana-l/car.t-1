@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField,SelectField,IntegerField,FloatField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField,SelectField,IntegerField,FloatField,validators
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError,AnyOf
 from flaskblog.models import Account,Car
 
@@ -80,4 +80,20 @@ class PostForm(FlaskForm):
     engine = IntegerField('Engine(CC)', validators=[DataRequired()])
     power = IntegerField('Power(bhp)', validators=[DataRequired()])
     seats = IntegerField('Number of seats', validators=[DataRequired()])
+    picture = FileField('Upload photo of car', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('View Predicted Price')
+
+
+class InputForm(FlaskForm):
+    brand = SelectField('Brand',choices=[('Maruti','Maruti'), ('Toyota','Toyota'), ('Hyundai','Hyundai'), ('Mahindra','Mahindra'), ('Honda','Honda'), ('Audi','Audi'),
+       ('Nissan','Nissan'), ('BMW','BMW'), ('Ford','Ford'), ('Skoda','Skoda'), ('Volkswagen','Volkswagen'), ('Mitsubishi','Mitsibhishi'),
+       ('Mercedes-Benz','Mercedes-Benz'), ('Tata','Tata'), ('Chevrolet','Chevrolet'), ('Datsun','Datsun'), ('Jaguar','Jaguar'), ('Fiat','Fiat'),
+       ('Hindustan','Hindustan'), ('Renault','Renault'), ('Mini','Mini'), ('Bentley','Bentley'), ('Land Rover','Land Rover'), ('Volvo','Volvo'),
+       ('Range Rover','Range Rover'), ('ISUZU','ISUZU'), ('Jeep','Jeep'), ('Porsche','Porsche'), ('Opel','Opel'),('None','None')])
+    location = SelectField('Location',choices=[('Coimbatore','Coimbatore'),('Bangalore','Bangalore'),('Kochi','Kochi'),('Hyderabad','Hyderabad'),('Delhi','Delhi'),('Mumbai','Mumbai'),('Ahmedabad','Ahmedabad'),('Chennai','Chennai'),('Pune','Pune'),('Jaipur','Jaipur'),('Kolkata','Kolkata'),('None','None')])
+    kilometers_driven_start= IntegerField('Kilometers Min Range',validators=[validators.Optional(strip_whitespace=True)])
+    kilometers_driven_end= IntegerField('Kilometers Max Range',validators=[validators.Optional(strip_whitespace=True)])
+    fuel_type = SelectField('Fuel Type',choices=[('Diesel','Diesel'),('Petrol','Petrol'),('CNG','CNG'),('LPG','LPG'),('None','None')])
+    transmission = SelectField('Transmission',choices=[('Manual','Manual'),('Automatic','Automatic'),('None','None')])
+    owner_type = SelectField('Owner Type',choices=[('First','First'),('Second','Second'),('Third','Third'),('Fourth and above','Fourth and above'),('None','None')])
+    submit = SubmitField('Search')

@@ -3,7 +3,7 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskblog import app, db, bcrypt
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm,FinalForm
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm,FinalForm,InputForm
 from flaskblog.models import Account, Car
 from flask_login import login_user, current_user, logout_user, login_required
 import numpy as np
@@ -100,6 +100,9 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         car = Car(title=form.title.data, content=form.content.data,author=current_user,location=form.location.data,year=form.year.data,kilometers_driven=form.kilometers_driven.data,fuel_type=form.fuel_type.data,transmission=form.transmission.data,owner_type=form.owner_type.data,mileage=form.mileage.data,engine=form.engine.data,power=form.power.data,seats=form.seats.data,brand=form.brand.data)
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
         db.session.add(car)
         db.session.commit()
         flash('Price Predicted!', 'success')
@@ -107,10 +110,36 @@ def new_post():
     return render_template('create_post.html', title='New Prediction',form=form,
                                        legend='New Prediction')
 
+@app.route("/input", methods=['GET', 'POST'])
+@login_required
+def input():
+    form = InputForm()
+    if form.validate_on_submit():
+        return redirect(url_for('search',brand=form.brand.data,location=form.location.data,kilometers_driven_start=form.kilometers_driven_start.data,
+            kilometers_driven_end=form.kilometers_driven_end.data,fuel_type=form.fuel_type.data,transmission=form.transmission.data,owner_type=form.owner_type.data,))
+    return render_template('input.html', title='Input',form=form, legend='Input')
+@app.route("/search",methods=['GET', 'POST'])
+def search():
+    quer=dict()
+    nparr=[request.args.get('location'),request.args.get('fuel_type'),request.args.get('transmission'), request.args.get('owner_type'),
+    request.args.get('brand'),request.args.get('kilometers_driven_start'),request.args.get('kilometers_driven_end')]
+    l=['location','fuel_type','transmission','owner_type','brand','kilometers_driven_start','kilometers_driven_end']
+    for i in range(len(nparr)-2):
+        if nparr[i]!=None and nparr[i]!='None':
+            quer[l[i]]=nparr[i]
+    posts=Car.query.filter_by(**quer)
+    if nparr[len(nparr)-2]!=None:
+        posts2=Car.query.filter(Car.kilometers_driven >= int(nparr[len(nparr)-2]))
+        posts=[item for item in posts if item in posts2]
+    if nparr[len(nparr)-1]!=None:
+        posts3=Car.query.filter(Car.kilometers_driven <= int(nparr[len(nparr)-1]))
+        posts=[item for item in posts if item in posts3]
+    return render_template('search.html', posts=posts)
+
 def price_predictor(nparr):
     loaded_model = joblib.load('flaskblog/static/model/final_xgb.joblib.dat')
     y_pred = loaded_model.predict([nparr])
-    return y_pred
+    return np.round(y_pred)
 def data_preprocess(car):
     l=[]
     location_rank = { 'mumbai':6, 'pune':9, 'chennai':8, 'coimbatore':1, 'hyderabad':4, 'jaipur':10,'kochi':3, 'kolkata':11, 'delhi':5, 'bangalore':2, 'ahmedabad':7}
@@ -118,7 +147,6 @@ def data_preprocess(car):
         l.append(location_rank[car.location])
 
     l.append(car.year)
-
     l.append(car.kilometers_driven)
 
     fuel_type_enc={ 'diesel' :1, 'cng':2,'lpg':3,'petrol':4}
@@ -159,7 +187,6 @@ def data_preprocess(car):
 def predictor_post(post_id):
     car = Car.query.get_or_404(post_id)
     form = FinalForm()
-    #arr = [car.location,car.year,car.kilometers_driven,car.fuel_type,car.transmission,car.owner_type,car.mileage,car.engine,car.power,car.seats,car.brand]
     nparr = data_preprocess(car)
     car.pred_price = price_predictor(nparr)
     db.session.commit()
@@ -184,19 +211,44 @@ def post(post_id):
 @app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
-    post = Post.query.get_or_404(post_id)
+    post = Car.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        post.title = form.title.data
-        post.content = form.content.data
+        post.title=form.title.data
+        post.content=form.content.data
+        post.location=form.location.data
+        post.year=form.year.data
+        post.kilometers_driven=form.kilometers_driven.data
+        post.fuel_type=form.fuel_type.data
+        post.transmission=form.transmission.data
+        post.owner_type=form.owner_type.data
+        post.mileage=form.mileage.data
+        post.engine=form.engine.data
+        post.power=form.power.data
+        post.seats=form.seats.data
+        post.brand=form.brand.data
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
         db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('post', post_id=post.id))
+        flash('Price Predicted!', 'success')
+        return redirect(url_for('predictor_post',post_id=post.id))
     elif request.method == 'GET':
-        form.title.data = post.title
-        form.content.data = post.content
+        form.title.data=post.title
+        form.content.data= post.content
+        form.location.data=post.location
+        form.year.data=post.year
+        form.kilometers_driven.data=post.kilometers_driven
+        form.fuel_type.data=post.fuel_type
+        form.transmission.data=post.transmission
+        form.owner_type.data=post.owner_type
+        form.mileage.data=post.mileage
+        form.engine.data=post.engine
+        form.power.data=post.power
+        form.seats.data=post.seats
+        form.brand.data=post.brand
     return render_template('create_post.html', title='Update Post',
                            form=form, legend='Update Post')
 
@@ -204,7 +256,7 @@ def update_post(post_id):
 @app.route("/post/<int:post_id>/delete", methods=['POST'])
 @login_required
 def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
+    post = Car.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
     db.session.delete(post)
