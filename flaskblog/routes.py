@@ -3,8 +3,8 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskblog import app, db, bcrypt
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm,FinalForm,InputForm
-from flaskblog.models import Account, Car
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm,FinalForm,InputForm,NotificationForm
+from flaskblog.models import Account, Car,Notification
 from flask_login import login_user, current_user, logout_user, login_required
 import numpy as np
 from sklearn.externals import joblib
@@ -19,6 +19,11 @@ def home():
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
+
+# @app.route("/notif")
+# def view_notif():
+#     notifs = Notification.query.all()
+#     return render_template('notifications.html', notifs=notifs)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -219,6 +224,35 @@ def post(post_id):
     post = Car.query.get_or_404(post_id)
     image_file = url_for('static', filename='car_pics/' + post.image_file)
     return render_template('post.html', title=post.title, post=post,image_file=image_file)
+
+
+@app.route("/post/<int:post_id>/interested", methods=['GET', 'POST'])
+@login_required
+def notify_seller(post_id):
+    post = Car.query.get_or_404(post_id)
+    form = NotificationForm()
+    if form.validate_on_submit():
+        notif=Notification(content=form.content.data,seller_id=post.author.id,buyer_id=current_user.id,car_id=post.id,
+            seller_name=post.author.username,buyer_name=current_user.username,car_name=post.title)
+        db.session.add(notif)
+        db.session.commit()
+        flash('Notification Sent', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_notification.html', title='Send Notifictaion',
+                           form=form, legend='Send Notification')
+
+
+@app.route("/account_expanded/<int:id>")
+def display_account(id):
+    acc=Account.query.get_or_404(id)
+    image_file = url_for('static', filename='profile_pics/' + acc.image_file)
+    return render_template('account_expanded.html', title='Account',acc=acc,image_file=image_file)
+
+@app.route("/notif")
+def view_notif():
+    notifs = Notification.query.all()
+    return render_template('notifications.html', title='Send Notification',notifs=notifs)
+
 
 
 @app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])

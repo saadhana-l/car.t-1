@@ -33,6 +33,7 @@
             <div class="navbar-nav">
               {% if current_user.is_authenticated %}
                 {% if current_user.account_type == 'Seller' %}
+                  <a class="nav-item nav-link" href="{{ url_for('view_notif') }}">View Notifications</a>
                   <a class="nav-item nav-link" href="{{ url_for('new_post') }}">New Post</a>
                 {% else %}
                   <a class="nav-item nav-link" href="{{ url_for('input') }}">Search</a>

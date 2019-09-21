@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for notif in notifs %}
+    {% if notif.seller_id==current_user.id %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <p>
+                Car name:
+              <a class="mr-2" href="{{ url_for('post', post_id=notif.id) }}">{{ notif.car_name }}</a>
+            </p>
+            
+              <p>Buyer:
+              <a class="mr-2" href="{{ url_for('display_account', id=notif.buyer_id) }}">{{ notif.buyer_name }}</a>
+              </p>
+            </div>
+            <p class="article-content">Message from buyer: </p>
+            <p>{{ notif.content }}</p>
+          </div>
+        </article>
+        {% endif %}
+    {% endfor %}
+{% endblock content %}

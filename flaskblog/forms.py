@@ -100,3 +100,7 @@ class InputForm(FlaskForm):
     transmission = SelectField('Transmission',choices=[('Manual','Manual'),('Automatic','Automatic'),('None','None')])
     owner_type = SelectField('Owner Type',choices=[('First','First'),('Second','Second'),('Third','Third'),('Fourth and above','Fourth and above'),('None','None')])
     submit = SubmitField('Search')
+
+class NotificationForm(FlaskForm):
+    content=StringField( validators=[DataRequired()])
+    submit = SubmitField('Submit')

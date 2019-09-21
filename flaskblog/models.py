@@ -45,3 +45,16 @@ class Car(db.Model):
 
     def __repr__(self):
         return f"Car({self.title}', '{self.date_posted}','{self.content}','{self.user_id}','{self.location}','{self.year}','{self.kilometers_driven}','{self.fuel_type}','{self.transmission}','{self.owner_type}','{self.mileage}','{self.engine}','{self.power}','{self.seats}','{self.brand}',, '{self.image_file}')"
+
+class Notification(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    seller_id= db.Column(db.Integer)
+    buyer_id= db.Column(db.Integer)
+    car_id= db.Column(db.Integer)
+    seller_name=db.Column(db.String)
+    buyer_name=db.Column(db.String)
+    car_name=db.Column(db.String)
+    content = db.Column(db.Text, nullable=False)
+    def __repr__(self):
+        return f"Notification('{self.seller_id}','{self.buyer_id}', '{self.car_id}', '{self.content}','{self.seller_name}','{self.buyer_name}','{self.car_name}')"
+
