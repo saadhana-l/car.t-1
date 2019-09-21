@@ -26,7 +26,7 @@ class Car(db.Model):
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
-    image_file = db.Column(db.String(20), nullable=False, default='default_car.jpg')
+    image_file = db.Column(db.String(40), nullable=False, default='default_car.jpg')
     user_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     location = db.Column(db.String(20),nullable=False)
     year = db.Column(db.Integer,nullable=False)
@@ -44,4 +44,4 @@ class Car(db.Model):
     deal_type =  db.Column(db.String,nullable=True)
 
     def __repr__(self):
-        return f"Car({self.title}', '{self.date_posted}','{self.content}','{self.user_id}','{self.location}','{self.year}','{self.kilometers_driven}','{self.fuel_type}','{self.transmission}','{self.owner_type}','{self.mileage}','{self.engine}','{self.power}','{self.seats}','{self.brand}')"
+        return f"Car({self.title}', '{self.date_posted}','{self.content}','{self.user_id}','{self.location}','{self.year}','{self.kilometers_driven}','{self.fuel_type}','{self.transmission}','{self.owner_type}','{self.mileage}','{self.engine}','{self.power}','{self.seats}','{self.brand}',, '{self.image_file}')"

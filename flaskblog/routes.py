@@ -72,6 +72,19 @@ def save_picture(form_picture):
 
     return picture_fn
 
+def save_picture_2(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/car_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
 
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
@@ -101,8 +114,8 @@ def new_post():
     if form.validate_on_submit():
         car = Car(title=form.title.data, content=form.content.data,author=current_user,location=form.location.data,year=form.year.data,kilometers_driven=form.kilometers_driven.data,fuel_type=form.fuel_type.data,transmission=form.transmission.data,owner_type=form.owner_type.data,mileage=form.mileage.data,engine=form.engine.data,power=form.power.data,seats=form.seats.data,brand=form.brand.data)
         if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+            picture_file = save_picture_2(form.picture.data)
+            car.image_file = picture_file
         db.session.add(car)
         db.session.commit()
         flash('Price Predicted!', 'success')
@@ -204,7 +217,7 @@ def predictor_post(post_id):
 @app.route("/post/<int:post_id>")
 def post(post_id):
     post = Car.query.get_or_404(post_id)
-    image_file = url_for('static', filename='car_pics/' + 'default_car.jpg')
+    image_file = url_for('static', filename='car_pics/' + post.image_file)
     return render_template('post.html', title=post.title, post=post,image_file=image_file)
 
 
@@ -230,8 +243,8 @@ def update_post(post_id):
         post.seats=form.seats.data
         post.brand=form.brand.data
         if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+            picture_file = save_picture_2(form.picture.data)
+            post.image_file = picture_file
         db.session.commit()
         flash('Price Predicted!', 'success')
         return redirect(url_for('predictor_post',post_id=post.id))

@@ -82,6 +82,9 @@ class PostForm(FlaskForm):
     seats = IntegerField('Number of seats', validators=[DataRequired()])
     picture = FileField('Upload photo of car', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('View Predicted Price')
+    def validate_pic(self,picture):
+        if picture.data==None:
+            raise ValidationError('Please choose a picture')
 
 
 class InputForm(FlaskForm):
