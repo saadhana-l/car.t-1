@@ -7,9 +7,9 @@
             <div class="article-metadata">
               <p>
                 Car name:
-              <a class="mr-2" href="{{ url_for('post', post_id=notif.id) }}">{{ notif.car_name }}</a>
+              <a class="mr-2" href="{{ url_for('post', post_id=notif.car_id) }}">{{ notif.car_name }}</a>
             </p>
-            
+
               <p>Buyer:
               <a class="mr-2" href="{{ url_for('display_account', id=notif.buyer_id) }}">{{ notif.buyer_name }}</a>
               </p>

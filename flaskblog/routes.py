@@ -83,7 +83,7 @@ def save_picture_2(form_picture):
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/car_pics', picture_fn)
 
-    output_size = (125, 125)
+    output_size = (325, 325)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
