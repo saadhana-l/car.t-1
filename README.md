@@ -16,7 +16,9 @@ used car resale with ML!
 
    Then type the following and call exit()
    >$from flaskblog import db
+
    >$db.create_all()
+
    >$exit()
 
 3. To deploy the server run
@@ -35,4 +37,4 @@ used car resale with ML!
 
 The model_creation directory holds all the work that lead to model creation. It holds the data visualization used to create the numeric form of the data. Since this was initially part of a competition I am unsure if I can release the original data.
 
-The numeric version that that was created is present. The grid search used to create the final model that can be found in car_grid_search.ipynb.
+The numeric version that was created is present. The grid search used to create the final model that can be found in car_grid_search.ipynb.
