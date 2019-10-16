@@ -1,7 +1,7 @@
 # car.t
 ### used car resale with ML!
 
-![Screenshot](ss.png)
+![Screenshot](images/ss.png)
 
 # Build
 
